@@ -2,13 +2,9 @@
 ## Website to organize and play local media
 
 - Videos
-  -
-  Movies
-  -
-  TV Shows
+  - Movies
+  -TV Shows
 
 - Audio
-  -
-  Music
-  -
-  Meditations
+  -Music
+  -Meditations
