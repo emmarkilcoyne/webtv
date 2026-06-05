@@ -1,15 +1,19 @@
 * {
     font-family: 'Courier New', Courier, monospace;
-    outline: 2px solid red;
     color: #f6d5a8;
     background-color: #1d1544;
-
-
 }
 
-.fantasy {
-    font-size: 22px;
+.box {
     text-align: center;
+    display: flex;
+    justify-content: center;
+}
+
+.box2 {
+    text-align: left;
+    display: flex;
+    justify-content: center;
 }
 
 img {
