@@ -16,6 +16,18 @@
     justify-content: center;
 }
 
+.container {
+    display: flex;
+
+}
+
+.item {
+    flex: 1;
+    text-align: left;
+
+
+}
+
 img {
     height: 200px;
     width: auto;
