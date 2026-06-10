@@ -1,34 +1,28 @@
 * {
-    font-family: 'Courier New', Courier, monospace;
-    color: #f6d5a8;
-    background-color: #1d1544;
+    font-family: OCR A Extended, Courier, monospace;
+    color: black;
+    font-size: 32px;
+}
+button{
+    background-color: white;
 }
 
-.box {
-    text-align: center;
+body{
+    background-color: white;
+}
+.commands button{
+    display: block;
+}
+
+.menu{
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
 }
 
-.box2 {
-    text-align: left;
-    display: flex;
-    justify-content: center;
+.category {
+    width: 300px;
+    margin: 10px;
 }
 
-.container {
-    display: flex;
-
-}
-
-.item {
-    flex: 1;
-    text-align: left;
-
-
-}
-
-img {
-    height: 200px;
-    width: auto;
-}
