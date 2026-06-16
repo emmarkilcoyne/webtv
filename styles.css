@@ -5,6 +5,7 @@
 }
 button{
     background-color: white;
+    cursor: pointer;
 }
 
 body{
@@ -25,4 +26,18 @@ body{
     width: 300px;
     margin: 10px;
 }
+
+.heading{
+    display: flex;
+    flex-direction: row;
+    justify-content: left;
+        
+}
+
+.heading-item{
+    border: black solid 3px;
+    padding-right: 300px;
+}
+
+
 
