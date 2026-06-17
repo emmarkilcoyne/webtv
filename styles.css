@@ -34,10 +34,41 @@ body{
         
 }
 
+.container{
+    display: flex;
+    
+}
+
 .heading-item{
     border: black solid 3px;
     padding-right: 300px;
+    margin-bottom: none;
+    
+}
+
+.unsorted-files{
+    background-color: darkgray;
+}
+
+.files{
+    margin: 0;
+    cursor: pointer;
+    
+}
+
+.category-name{
+    margin: 0;
 }
 
 
+.category-files{
+    margin: 0;
+    opacity: 50%
+    
+    
+}
+
+.category-items{
+    border: 3px solid black;
+}
 
