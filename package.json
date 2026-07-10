@@ -1,0 +1,23 @@
+{
+  "name": "web-tv",
+  "version": "1.0.0",
+  "description": "Media organizer and player",
+  "homepage": "https://github.com/emmarkilcoyne/webtv#readme",
+  "bugs": {
+    "url": "https://github.com/emmarkilcoyne/webtv/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/emmarkilcoyne/webtv.git"
+  },
+  "license": "ISC",
+  "author": "Emma Kilcoyne",
+  "type": "commonjs",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "devDependencies": {
+    "electron": "^43.1.0"
+  }
+}
