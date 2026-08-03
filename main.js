@@ -19,7 +19,7 @@ async function handleFileOpen(){
     }
     
     else {
-        scrapeFileData(result.filePaths[0]);
+        scrapeFolderData(result.filePaths[0]);
     }
     return result;
     
@@ -29,7 +29,7 @@ async function handleFileOpen(){
 // calls addTODatabase and adds file information to the filesTable
 // current status pulls strings only from selected folder 
 
-function scrapeFileData(filePath){
+function scrapeFolderData(filePath){
 
     console.log(filePath);
 
@@ -43,8 +43,9 @@ function scrapeFileData(filePath){
 
                 let fileName = path.parse(file).name;
                 let fileType = path.parse(file).ext;
+                let fullPath = path.join(filePath, file);
 
-                addToFilesTable(fileName, fileType, filePath);
+                addToFilesTable(fileName, fileType, fullPath);
                 console.log(file);
             })
             testPrintDatabase();
@@ -63,7 +64,7 @@ function scrapeFileData(filePath){
             files.forEach(file => {
                 if(file.isDirectory()){
                     console.log("Folder: ", file);
-                    scrapeFileData(path.join(filepath, file.name));
+                    scrapeFolderData(path.join(filepath, file.name));
                 }
                 console.log("File: ", file);
             })
@@ -79,6 +80,11 @@ function addToFilesTable(fileName, fileType, path){
 
     insert.run(fileName, fileType, path);
 
+}
+
+function getFilesTable(){
+    const query = db.prepare('SELECT * FROM filesTable ORDER BY file_name');
+    return query.all();
 }
 
 // prints all items in filesTable table for testing purposes
@@ -129,9 +135,14 @@ function createWindow () {
 
 
 app.whenReady().then(() => {
-    ipcMain.handle('dialog:openFile', handleFileOpen)
-    createWindow();
     createDatabase();
+    
+    ipcMain.handle('dialog:openFile', handleFileOpen)
+    ipcMain.handle('files:get', () => {
+        return getFilesTable();
+    });
+    createWindow();
+    
     
     
     
