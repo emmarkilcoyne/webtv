@@ -1,6 +1,7 @@
 const { app, BrowserWindow, ipcMain, dialog} = require('electron/main');
 const path = require('path');
 const { DatabaseSync } = require('node:sqlite');
+const fs = require('fs');
 
 
 
@@ -24,29 +25,82 @@ async function handleFileOpen(){
     
 }
 
-function scrapeFileData(filepath){
+// functions scrapes file information from the selected directory
+// calls addTODatabase and adds file information to the filesTable
+// current status pulls strings only from selected folder 
 
+function scrapeFileData(filePath){
 
-    console.log(filepath);
+    console.log(filePath);
+
+    fs.readdir(filePath, (err, files) => {
+        if (err){
+            console.log(err);
+        }
+        else {
+            console.log("Current directory filenames:");
+            files.forEach(file => {
+
+                let fileName = path.parse(file).name;
+                let fileType = path.parse(file).ext;
+
+                addToFilesTable(fileName, fileType, filePath);
+                console.log(file);
+            })
+            testPrintDatabase();
+        }
+    })
+
+    // Future Update: Recurse through folders within folders
+
+    /*
+    fs.readdir(filepath, { withFileTypes: true }, (err, files) => {
+        if (err){
+            console.log(err);
+        }
+        else {
+            console.log("Current directory filenames:");
+            files.forEach(file => {
+                if(file.isDirectory()){
+                    console.log("Folder: ", file);
+                    scrapeFileData(path.join(filepath, file.name));
+                }
+                console.log("File: ", file);
+            })
+        }
+    })
+    */
+    
 }
 
+// adds items to the filesTable
+function addToFilesTable(fileName, fileType, path){
+    const insert = db.prepare('INSERT INTO filesTable (file_name, file_type, file_path) VALUES (?, ?, ?)');
 
-function testPrintDatabase(db){
+    insert.run(fileName, fileType, path);
+
+}
+
+// prints all items in filesTable table for testing purposes
+function testPrintDatabase(){
     const query = db.prepare('SELECT * FROM filesTable ORDER BY file_name');
 
     console.log(query.all());
 }
 
-function testAddToDatabase(db){
+// adds items to the filesTable for testing purposes
+function testAddToDatabase(filename, path){
     const insert = db.prepare('INSERT INTO filesTable (file_name, file_type, file_path) VALUES (?, ?, ?)');
 
     insert.run('spiderman', 'mp4', 'Documents/Movies/Action');
 
 }
 
+// creates the filesTable table for metadata on files in selected directory
+let db;
 function createDatabase(){
 
-    const db = new DatabaseSync(':memory:');
+    db = new DatabaseSync(':memory:');
 
     console.log("created database");
     db.exec(`
@@ -57,13 +111,11 @@ function createDatabase(){
             PRIMARY KEY (file_name, file_type))
     `)
 
-    testAddToDatabase(db);
-    testPrintDatabase(db);
-
-    
+    //testAddToDatabase();
+    //testPrintDatabase();    
 }
 
-
+// electron processes
 function createWindow () {
     const win = new BrowserWindow({
         width: 1100,
