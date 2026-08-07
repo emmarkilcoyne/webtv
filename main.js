@@ -2,6 +2,7 @@ const { app, BrowserWindow, ipcMain, dialog} = require('electron/main');
 const path = require('path');
 const { DatabaseSync } = require('node:sqlite');
 const fs = require('fs');
+let db;     //database
 
 
 
@@ -26,7 +27,7 @@ async function handleFileOpen(){
 }
 
 // functions scrapes file information from the selected directory
-// calls addTODatabase and adds file information to the filesTable
+// calls addToFilesTable and adds file information to the filesTable
 // current status pulls strings only from selected folder 
 
 function scrapeFolderData(filePath){
@@ -41,11 +42,11 @@ function scrapeFolderData(filePath){
             console.log("Current directory filenames:");
             files.forEach(file => {
 
-                let fileName = path.parse(file).name;
-                let fileType = path.parse(file).ext;
+                //let fileName = path.parse(file).name;
+                //let fileType = path.parse(file).ext;
                 let fullPath = path.join(filePath, file);
 
-                addToFilesTable(fileName, fileType, fullPath);
+                addToFilesTable(file, fullPath);
                 console.log(file);
             })
             testPrintDatabase();
@@ -75,51 +76,70 @@ function scrapeFolderData(filePath){
 }
 
 // adds items to the filesTable
-function addToFilesTable(fileName, fileType, path){
-    const insert = db.prepare('INSERT INTO filesTable (file_name, file_type, file_path) VALUES (?, ?, ?)');
+function addToFilesTable(file, path){
+    const insert = db.prepare('INSERT INTO filesTable (file, file_path) VALUES (?, ?)');
 
-    insert.run(fileName, fileType, path);
+    insert.run(file, path);
 
 }
 
 function getFilesTable(){
-    const query = db.prepare('SELECT * FROM filesTable ORDER BY file_name');
+    const query = db.prepare('SELECT * FROM filesTable ORDER BY file');
     return query.all();
 }
 
 // prints all items in filesTable table for testing purposes
 function testPrintDatabase(){
-    const query = db.prepare('SELECT * FROM filesTable ORDER BY file_name');
-
+    const query = db.prepare('SELECT * FROM filesTable ORDER BY file');
     console.log(query.all());
 }
 
 // adds items to the filesTable for testing purposes
 function testAddToDatabase(filename, path){
-    const insert = db.prepare('INSERT INTO filesTable (file_name, file_type, file_path) VALUES (?, ?, ?)');
+    const insert = db.prepare('INSERT OR IGNORE INTO filesTable (file, file_path) VALUES (?, ?)');
 
-    insert.run('spiderman', 'mp4', 'Documents/Movies/Action');
+    insert.run('Clueless.mp4', 'Documents/Movies/RomCom');
 
 }
 
 // creates the filesTable table for metadata on files in selected directory
-let db;
 function createDatabase(){
 
-    db = new DatabaseSync(':memory:');
+    db = new DatabaseSync('mediaLibrary.db');
 
     console.log("created database");
     db.exec(`
         CREATE TABLE IF NOT EXISTS filesTable(
+            file TEXT NOT NULL PRIMARY KEY,
+            file_path TEXT NOT NULL
+        );
+
+        CREATE TABLE IF NOT EXISTS playlists(
+            playlist_name TEXT NOT NULL,
             file_name TEXT NOT NULL,
-            file_type TEXT NOT NULL,
-            file_path TEXT NOT NULL,
-            PRIMARY KEY (file_name, file_type))
+            PRIMARY KEY(playlist_name, file_name),
+            FOREIGN KEY(file_name) REFERENCES filesTable(file)
+        );
     `)
 
-    //testAddToDatabase();
-    //testPrintDatabase();    
+    testAddToDatabase();
+    //testPrintDatabase(); 
+    testAddToPlaylists();   
 }
+
+// adds items to the playlists
+function addToPlaylists(event, playlist, file){
+    const insert = db.prepare('INSERT INTO playlists (playlist_name, file_name) VALUES (?, ?)');
+    insert.run(playlist, file);
+}
+
+
+// adds item to playlist for testing purposes only
+function testAddToPlaylists(){
+    const insert = db.prepare('INSERT OR IGNORE INTO playlists (playlist_name, file_name) VALUES (?, ?)');
+    insert.run("Movies", "Clueless.mp4");
+}
+
 
 // electron processes
 function createWindow () {
@@ -141,6 +161,7 @@ app.whenReady().then(() => {
     ipcMain.handle('files:get', () => {
         return getFilesTable();
     });
+    ipcMain.handle('files:set', addToPlaylists)
     createWindow();
     
     
