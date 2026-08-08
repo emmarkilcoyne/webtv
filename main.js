@@ -88,6 +88,11 @@ function getFilesTable(){
     return query.all();
 }
 
+function getPlaylistsTable(){
+    const query = db.prepare('SELECT * FROM playlists ORDER BY playlist_name');
+    return query.all();
+}
+
 // prints all items in filesTable table for testing purposes
 function testPrintDatabase(){
     const query = db.prepare('SELECT * FROM filesTable ORDER BY file');
@@ -99,6 +104,7 @@ function testAddToDatabase(filename, path){
     const insert = db.prepare('INSERT OR IGNORE INTO filesTable (file, file_path) VALUES (?, ?)');
 
     insert.run('Clueless.mp4', 'Documents/Movies/RomCom');
+    insert.run('Song.mp3', 'Documents/Music');
 
 }
 
@@ -109,6 +115,8 @@ function createDatabase(){
 
     console.log("created database");
     db.exec(`
+        PRAGMA foreign_keys = ON;
+
         CREATE TABLE IF NOT EXISTS filesTable(
             file TEXT NOT NULL PRIMARY KEY,
             file_path TEXT NOT NULL
@@ -138,6 +146,7 @@ function addToPlaylists(event, playlist, file){
 function testAddToPlaylists(){
     const insert = db.prepare('INSERT OR IGNORE INTO playlists (playlist_name, file_name) VALUES (?, ?)');
     insert.run("Movies", "Clueless.mp4");
+    insert.run("Music", "Song.mp3");
 }
 
 
@@ -160,6 +169,9 @@ app.whenReady().then(() => {
     ipcMain.handle('dialog:openFile', handleFileOpen)
     ipcMain.handle('files:get', () => {
         return getFilesTable();
+    });
+    ipcMain.handle('playlists:get', () => {
+        return getPlaylistsTable();
     });
     ipcMain.handle('files:set', addToPlaylists)
     createWindow();

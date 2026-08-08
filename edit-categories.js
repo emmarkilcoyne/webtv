@@ -22,6 +22,55 @@ async function getUnsortedFiles(){
     });
 }
 
+async function getPlaylists(){
+
+    const playlists = await window.electronAPI.getPlaylists();
+
+    const container = document.querySelector(".playlists");
+
+    container.innerHTML = "";
+
+    const grouped = {};
+
+    playlists.forEach(playlist => {
+
+        if (!grouped[playlist.playlist_name]) {
+            grouped[playlist.playlist_name] = [];
+        }
+        
+        grouped[playlist.playlist_name].push(playlist.file_name);
+    });
+     for (const playlistName in grouped) {
+
+        const playlistContainer = document.createElement("div");
+        playlistContainer.className = "category-items";
+        playlistContainer.dataset.playlist = playlistName;
+
+        const playlistElement = document.createElement("p");
+        playlistElement.className = "category-name";
+        playlistElement.textContent = playlistName;
+
+        playlistContainer.appendChild(playlistElement);
+
+        grouped[playlistName].forEach(fileName => {
+
+            const fileElement = document.createElement("p");
+            fileElement.className = "category-files";
+            fileElement.textContent = fileName;
+
+            playlistContainer.appendChild(fileElement);
+        });
+
+    const editButton = document.createElement("button");
+    editButton.textContent = "Edit";
+    editButton.className = "edit-button";
+    playlistContainer.appendChild(editButton);
+
+    container.appendChild(playlistContainer);
+    }
+}
+
+
 
 function setupPlaylistDrop(){
 
@@ -34,18 +83,27 @@ function setupPlaylistDrop(){
         });
 
 
-        playlist.addEventListener("drop", (event) => {
+        playlist.addEventListener("drop", async (event) => {
 
             event.preventDefault();
 
             const fileName = event.dataTransfer.getData("text/plain");
-            //const playlistName = playlist.dataset.playlist;
-             let playlistName = "Movies"
-
+            const playlistName = playlist.dataset.playlist;
+           
             console.log("Adding", fileName, "to", playlistName);
 
             window.electronAPI.setData(playlistName, fileName);
 
+            const unsortedFiles = document.querySelectorAll(".unsorted-files .files");
+
+            unsortedFiles.forEach(file => {
+                if (file.textContent === fileName) {
+                    file.remove();
+                }
+            });
+
+            await getPlaylists();
+            setupPlaylistDrop();
         });
 
     });
@@ -55,5 +113,9 @@ function setupPlaylistDrop(){
 
 
 
-getUnsortedFiles();
-setupPlaylistDrop();
+async function loadPage() {
+    await getUnsortedFiles();
+    await getPlaylists();
+    setupPlaylistDrop();
+}
+loadPage();
