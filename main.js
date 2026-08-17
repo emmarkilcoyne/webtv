@@ -82,14 +82,26 @@ function addToFilesTable(file, path){
     insert.run(file, path);
 
 }
-
+// return the filesTable
 function getFilesTable(){
     const query = db.prepare('SELECT * FROM filesTable ORDER BY file');
     return query.all();
 }
 
+// returns the PlaylistsTable
+
+// TO DO : Needs to include playlists from the playlistTables that are not yet added to playlists with file info (empty playlists)
+
 function getPlaylistsTable(){
-    const query = db.prepare('SELECT * FROM playlists ORDER BY playlist_name');
+    const query = db.prepare(`
+        SELECT
+            playlistTitles.title AS playlist_name,
+            playlists.file_name
+        FROM playlistTitles
+        LEFT JOIN playlists
+            ON playlistTitles.title = playlists.playlist_name
+        ORDER BY playlistTitles.title
+        `);
     return query.all();
 }
 
@@ -108,7 +120,7 @@ function testAddToDatabase(filename, path){
 
 }
 
-// creates the filesTable table for metadata on files in selected directory
+// creates the tables needed for file information and playlist information
 function createDatabase(){
 
     db = new DatabaseSync('mediaLibrary.db');
@@ -122,23 +134,35 @@ function createDatabase(){
             file_path TEXT NOT NULL
         );
 
+        CREATE TABLE IF NOT EXISTS playlistTitles(
+            title TEXT NOT NULL PRIMARY KEY,
+            media_type TEXT NOT NULL
+        );
+
         CREATE TABLE IF NOT EXISTS playlists(
             playlist_name TEXT NOT NULL,
             file_name TEXT NOT NULL,
             PRIMARY KEY(playlist_name, file_name),
+            FOREIGN KEY(playlist_name) REFERENCES playlistTitles(title),
             FOREIGN KEY(file_name) REFERENCES filesTable(file)
         );
     `)
 
-    testAddToDatabase();
+    //testAddToDatabase();
     //testPrintDatabase(); 
-    testAddToPlaylists();   
+    //testAddToPlaylists();   
 }
 
 // adds items to the playlists
 function addToPlaylists(event, playlist, file){
     const insert = db.prepare('INSERT INTO playlists (playlist_name, file_name) VALUES (?, ?)');
     insert.run(playlist, file);
+}
+
+// creates a new empty playlist
+function createPlaylist(event, playlist, type){
+    const insert = db.prepare('INSERT INTO playlistTitles (title, media_type) VALUES (?, ?)');
+    insert.run(playlist, type);    
 }
 
 
@@ -174,6 +198,7 @@ app.whenReady().then(() => {
         return getPlaylistsTable();
     });
     ipcMain.handle('files:set', addToPlaylists)
+    ipcMain.handle('playlists:create', createPlaylist)
     createWindow();
     
     

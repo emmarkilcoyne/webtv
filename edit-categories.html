@@ -19,10 +19,28 @@
     <div class = "heading-item">Playlists</div>
         <div class = "playlists">
         </div>
-    <button> + Add Playlist </button>
+    <button onclick="displayPopUp()"> + Add Playlist </button>
     </div>
     </div>
     
+    <div id="playlist-popup" class="popup">
+        <div class="popup-content">
+            <h2>Create Playlist</h2>
+
+            <label for="playlist-name">Playlist Name</label>
+            <input id="playlist-name" type="text">
+
+            <label for="media-type">Media Type</label>
+            <select id="media-type">
+                <option value="video">Video</option>
+                <option value="audio">Audio</option>
+                <option value="document">Document</option>
+            </select>
+
+            <button id="create-playlist" onclick="addPlaylist()">Create</button>
+            <button id="cancel-playlist" onclick="closePopUp()">Cancel</button>
+        </div>
+    </div>
 
     <script src="edit-categories.js"></script>
 

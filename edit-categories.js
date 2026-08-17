@@ -109,8 +109,27 @@ function setupPlaylistDrop(){
     });
 
 }
+function closePopUp(){
+    const popup = document.querySelector("#playlist-popup");
+    popup.style.display = "none";
+}
 
+function displayPopUp(){
+    // make pop-up visible so user can type in Title of the playlist
+    const popup = document.querySelector("#playlist-popup");
+    popup.style.display = "block";
+    
+}
 
+// get user input for playlist and media type
+function addPlaylist(){
+    
+    // User types playlist name and selects media type from drop down (video, audio, document)
+    let playlist = document.querySelector("#playlist-name").value;
+    let type = document.querySelector("#media-type").value;
+    window.electronAPI.createPlaylist(playlist, type);
+
+}
 
 
 async function loadPage() {
