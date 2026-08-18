@@ -6,6 +6,25 @@ let db;     //database
 
 
 
+// delete a playlist
+function deletePlaylist(playlistTitle){
+
+    // delete playlist from Playlists
+    let query = db.prepare(`
+        DELETE FROM playlists
+        WHERE playlist_name=?
+    `);
+    query.run(playlistTitle);
+
+    // delete playlist from PlaylistTitles
+    query = db.prepare(`
+        DELETE FROM playlistTitles
+        WHERE title=?
+    `);
+    query.run(playlistTitle);
+
+}
+
 
 //select media folder button
 async function handleFileOpen(){
@@ -208,6 +227,9 @@ app.whenReady().then(() => {
     });
     ipcMain.handle('playlistTitles:get', () => {
         return getPlaylistTitles();
+    });
+    ipcMain.handle('playlists:delete', (event, playlist) => {
+        return deletePlaylist(playlist);
     });
     ipcMain.handle('files:set', addToPlaylists)
     ipcMain.handle('playlists:create', createPlaylist)

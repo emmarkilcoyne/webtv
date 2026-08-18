@@ -50,7 +50,7 @@
                 <div class = "heading-item">Edit Playlist</div>
                 <div id="playlist-title"></div>
                 <div id="playlist-content"></div>
-                <button id="delete-playlist" onclick="deletePlaylist()">Delete Playlist</button>
+                <button id="delete-playlist" onclick="deletePlaylist(document.getElementById('playlist-title').textContent)">Delete Playlist</button>
                 <button id="cancel-playlist" onclick="closeEditPopUp()">Cancel</button>
                
             </div>

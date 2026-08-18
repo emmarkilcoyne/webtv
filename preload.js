@@ -6,7 +6,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
   getPlaylists: () => ipcRenderer.invoke('playlists:get'),
   createPlaylist: (playlist, type) => ipcRenderer.invoke('playlists:create', playlist, type),
   setData: (playlist, file) => ipcRenderer.invoke('files:set', playlist, file),
-  getPlaylistTitles: () => ipcRenderer.invoke('playlistTitles:get')
+  getPlaylistTitles: () => ipcRenderer.invoke('playlistTitles:get'),
+  deletePlaylist: (playlist) => ipcRenderer.invoke('playlists:delete', playlist)
 
 });
 

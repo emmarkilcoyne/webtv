@@ -25,6 +25,12 @@ async function getUnsortedFiles(){
     });
 }
 
+async function deletePlaylist(playlist){
+    await window.electronAPI.deletePlaylist(playlist);
+    closeEditPopUp();
+    await loadPage();
+
+}
 
 //gets all playlists and displays them on screen
 async function getPlaylists(){
@@ -184,14 +190,14 @@ function displayCreatePopUp(){
 }
 
 // get user input for playlist and media type
-function addPlaylist(){
+async function addPlaylist(){
     
     // User types playlist name and selects media type from drop down (video, audio, document)
     let playlist = document.querySelector("#playlist-name").value;
     let type = document.querySelector("#media-type").value;
-    window.electronAPI.createPlaylist(playlist, type);
+    await window.electronAPI.createPlaylist(playlist, type);
     closeCreatePopUp();
-    getPlaylists();
+    await getPlaylists();
     setupPlaylistDrop();
 
 }
