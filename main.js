@@ -89,6 +89,17 @@ function getFilesTable(){
     return query.all();
 }
 
+// return the name of the playlists only 
+function getPlaylistTitles(){
+
+        const query = db.prepare(`
+        SELECT title AS playlist_name
+        FROM playlistTitles
+        ORDER BY title
+    `);
+    return query.all();
+}
+
 // returns the PlaylistsTable
 function getPlaylistsTable(){
     const query = db.prepare(`
@@ -194,6 +205,9 @@ app.whenReady().then(() => {
     });
     ipcMain.handle('playlists:get', () => {
         return getPlaylistsTable();
+    });
+    ipcMain.handle('playlistTitles:get', () => {
+        return getPlaylistTitles();
     });
     ipcMain.handle('files:set', addToPlaylists)
     ipcMain.handle('playlists:create', createPlaylist)

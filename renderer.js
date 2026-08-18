@@ -1,6 +1,5 @@
-console.log("renderer loaded");
-const setMediaFolder = document.getElementById('mediaFolder');
 
+const setMediaFolder = document.getElementById('mediaFolder');
 
 //select media folder button
 setMediaFolder.addEventListener('click', async () => {
@@ -9,4 +8,29 @@ setMediaFolder.addEventListener('click', async () => {
 
     
 })
+
+
+ async function generatePlaylistMenu(){
+
+    //select menu
+    const menu = document.querySelector("#menu");
+
+    // get playlists information
+    const playlists = await window.electronAPI.getPlaylistTitles();
+
+    // for each playlist display a button
+    playlists.forEach(playlist => {
+
+        const menuElement = document.createElement("button");
+        menuElement.className = "category";
+        menuElement.textContent = playlist.playlist_name;
+
+        menu.appendChild(menuElement);
+        
+    });
+    
+    
+ }
+
+ generatePlaylistMenu();
 
