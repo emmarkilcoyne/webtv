@@ -31,7 +31,6 @@ body{
     display: flex;
     flex-direction: row;
     justify-content: left;
-        
 }
 
 .container{
@@ -72,7 +71,7 @@ body{
     border: 3px solid black;
 }
 
-#playlist-popup {
+.popup {
     display: none;
     position: fixed;
     top: 50%;
@@ -83,3 +82,9 @@ body{
     border: 1px solid black;
     z-index: 1000;
 }
+
+.edit-playlist-file{
+    border: 1px solid gray;
+    margin: 0;
+}
+

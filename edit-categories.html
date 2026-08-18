@@ -11,19 +11,21 @@
     <div class = "container">
         <div>
             <div class = "heading-item">Unsorted Files</div>
-            <div class = "unsorted-files">
-                
-            </div>
+            <div class = "unsorted-files"></div>
+            <a href="index.html"><button>Home</button></a>
+            <button>Trash</button>
         </div>
-    <div>
-    <div class = "heading-item">Playlists</div>
-        <div class = "playlists">
+   
+    
+        <div>
+            <div class = "heading-item">Playlists</div>
+                <div class = "playlists">
+                </div>
+            <button onclick="displayCreatePopUp()"> + Add Playlist </button>
         </div>
-    <button onclick="displayPopUp()"> + Add Playlist </button>
-    </div>
     </div>
     
-    <div id="playlist-popup" class="popup">
+    <div id="create-popup" class="popup">
         <div class="popup-content">
             <h2>Create Playlist</h2>
 
@@ -38,8 +40,22 @@
             </select>
 
             <button id="create-playlist" onclick="addPlaylist()">Create</button>
-            <button id="cancel-playlist" onclick="closePopUp()">Cancel</button>
+            <button id="cancel-playlist" onclick="closeCreatePopUp()">Cancel</button>
         </div>
+    </div>
+
+    <div id="edit-popup" class="popup">
+        <div class="popup-content">
+            <div class="popup-content">
+                <div class = "heading-item">Edit Playlist</div>
+                <div id="playlist-title"></div>
+                <div id="playlist-content"></div>
+                <button id="delete-playlist" onclick="deletePlaylist()">Delete Playlist</button>
+                <button id="cancel-playlist" onclick="closeEditPopUp()">Cancel</button>
+               
+            </div>
+        </div>
+
     </div>
 
     <script src="edit-categories.js"></script>

@@ -53,7 +53,7 @@ function scrapeFolderData(filePath){
         }
     })
 
-    // Future Update: Recurse through folders within folders
+    // Possible Future Update: Recurse through folders within folders
 
     /*
     fs.readdir(filepath, { withFileTypes: true }, (err, files) => {
@@ -83,15 +83,13 @@ function addToFilesTable(file, path){
 
 }
 // return the filesTable
+// TO DO: only return files that are "unsorted" aka not in the playlist table
 function getFilesTable(){
     const query = db.prepare('SELECT * FROM filesTable ORDER BY file');
     return query.all();
 }
 
 // returns the PlaylistsTable
-
-// TO DO : Needs to include playlists from the playlistTables that are not yet added to playlists with file info (empty playlists)
-
 function getPlaylistsTable(){
     const query = db.prepare(`
         SELECT
